@@ -2,7 +2,7 @@
     <div>
         <div>
             <el-row :gutter="20">
-                <el-col :span="12">
+                <el-col :span="24">
                     <div class="grid-content bg-purple">
                         <ul class="listflow">
                             <li>
@@ -324,6 +324,7 @@
 
     .listflow li {
         float: left;
+        width: 10%;
         margin: 0 9px;
         text-align: center;
     }
