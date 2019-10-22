@@ -1,0 +1,470 @@
+<template lang="">
+  <div>
+    <div>
+      <el-row :gutter="20">
+        <el-col :span="4">
+          <div class="grid-content bg-purple">
+            <ul class="listflow">
+              <li>
+                <p class="titile">
+                  今日进程数量
+                </p>
+                <p class="nums">
+                  500
+                </p>
+                <p class="flowinfos">昨日进程：100</p>
+              </li>
+
+            </ul>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content bg-purple">
+            <ul class="listflow">
+
+              <li>
+                <p class="titile">
+                  执行数({{titles}})
+                </p>
+                <p class="nums">
+                  500
+                </p>
+              </li>
+
+            </ul>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content bg-purple">
+            <ul class="listflow">
+              <li>
+                <p class="titile">
+
+              <li>
+                <p class="titile">
+                  今日关注({{titles}})
+                </p>
+                <p class="nums">
+                  100
+                </p>
+              </li>
+
+            </ul>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content bg-purple">
+            <ul class="listflow">
+
+              </li>
+              <li>
+                <p class="titile">
+                  总关注({{titles}})
+                </p>
+                <p class="nums">
+                  50
+                </p>
+              </li>
+
+            </ul>
+          </div>
+        </el-col>
+        <el-col :span="4">
+          <div class="grid-content bg-purple">
+            <ul class="listflow">
+
+              <li>
+                <p class="titile">
+                  在线天数
+                </p>
+                <p class="nums">
+                  100
+                </p>
+              </li>
+            </ul>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
+    <el-divider></el-divider>
+    <div class="setGetAppPoolList">
+      <el-col>
+        <el-form ref="form" :model="form" class="filtrate" label-width="80px">
+          <el-row :gutter="10">
+            <el-col :span="5">
+              <el-form-item label="业务类型">
+                <el-select v-model="form.value" @change="onSubmit" placeholder="请选择">
+                  <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+
+          </el-row>
+        </el-form>
+      </el-col>
+    </div>
+    <div style="margin: 20px">
+      <el-button @click="setCurrent">添加业务</el-button>
+      <el-button @click="setcope">一键镜像</el-button>
+      <el-button @click="setdelete">一键删除</el-button>
+    </div>
+
+    <!-- //兴趣部落 -->
+    <div v-if="category==1">
+      <el-table class="tablist" @current-change="handleSelectionChange" max-height="700" :data="tableData"
+        style="width: 100%">
+        <!-- <el-table-column  prop="id"  label="Id" > </el-table-column> -->
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+        <el-table-column prop="id" label="qid"> </el-table-column>
+        <el-table-column prop="qq" label="权重"> </el-table-column>
+        <el-table-column prop="state" label="业务QQ"> </el-table-column>
+
+        <el-table-column prop=" state" label="量级"> </el-table-column>
+        <el-table-column prop="state" label="今日关注数（兴趣）"> </el-table-column>
+        <el-table-column fixed="right" label="今重关注数（兴趣）"></el-table-column>
+        <el-table-column fixed="right" label="状态"></el-table-column>
+        <el-table-column fixed="right" label="备注"></el-table-column>
+        <el-table-column fixed="right" label="操作">
+          <template slot-scope="scope">
+            <el-button @click="handleClickinfo(scope.row)" type="primary" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!-- //空间认证 -->
+    <div v-if="category==3">
+      <el-table class="tablist" @current-change="handleSelectionChange" max-height="700" :data="tableData"
+        style="width: 100%">
+        <!-- <el-table-column  prop="id"  label="Id" > </el-table-column> -->
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+        <el-table-column prop="id" label="qid"> </el-table-column>
+        <el-table-column prop="qq" label="权重"> </el-table-column>
+        <el-table-column prop="state" label="业务QQ"> </el-table-column>
+
+        <el-table-column prop=" state" label="量级"> </el-table-column>
+        <el-table-column prop="state" label="今日关注数（达人）"> </el-table-column>
+        <el-table-column fixed="right" label="今重关注数（达人）"></el-table-column>
+        <el-table-column fixed="right" label="状态"></el-table-column>
+        <el-table-column fixed="right" label="备注"></el-table-column>
+        <el-table-column fixed="right" label="操作">
+          <template slot-scope="scope">
+            <el-button @click="handleClickinfo(scope.row)" type="primary" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!-- //空间达人 -->
+    <div v-if="category==2">
+      <el-table class="tablist" @current-change="handleSelectionChange" max-height="700" :data="tableData"
+        style="width: 100%">
+        <!-- <el-table-column  prop="id"  label="Id" > </el-table-column> -->
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+        <el-table-column prop="id" label="qid"> </el-table-column>
+        <el-table-column prop="qq" label="权重"> </el-table-column>
+        <el-table-column prop="state" label="业务QQ"> </el-table-column>
+
+        <el-table-column prop=" state" label="量级"> </el-table-column>
+        <el-table-column prop="state" label="今日关注数（认证）"> </el-table-column>
+        <el-table-column fixed="right" label="今重关注数（认证）"></el-table-column>
+        <el-table-column fixed="right" label="状态"></el-table-column>
+        <el-table-column fixed="right" label="备注"></el-table-column>
+        <el-table-column fixed="right" label="操作">
+          <template slot-scope="scope">
+            <el-button @click="handleClickinfo(scope.row)" type="primary" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!-- //校园达人 -->
+    <div v-if="category==4">
+      <el-table class="tablist" @current-change="handleSelectionChange" max-height="700" :data="tableData"
+        style="width: 100%">
+        <!-- <el-table-column  prop="id"  label="Id" > </el-table-column> -->
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+        <el-table-column prop="id" label="qid"> </el-table-column>
+        <el-table-column prop="qq" label="权重"> </el-table-column>
+        <el-table-column prop="state" label="业务QQ"> </el-table-column>
+
+        <el-table-column prop=" state" label="量级"> </el-table-column>
+        <el-table-column prop="state" label="今日关注数（校园）"> </el-table-column>
+        <el-table-column fixed="right" label="今重关注数（校园）"></el-table-column>
+        <el-table-column fixed="right" label="状态"></el-table-column>
+        <el-table-column fixed="right" label="备注"></el-table-column>
+        <el-table-column fixed="right" label="操作">
+          <template slot-scope="scope">
+            <el-button @click="handleClickinfo(scope.row)" type="primary" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!-- //校园达人 -->
+    <div v-if="category==5">
+      <el-table class="tablist" @current-change="handleSelectionChange" max-height="700" :data="tableData"
+        style="width: 100%">
+        <!-- <el-table-column  prop="id"  label="Id" > </el-table-column> -->
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+        <el-table-column prop="id" label="qid"> </el-table-column>
+        <el-table-column prop="qq" label="权重"> </el-table-column>
+        <el-table-column prop="state" label="业务yy"> </el-table-column>
+
+        <el-table-column prop=" state" label="量级"> </el-table-column>
+        <el-table-column prop="state" label="今日关注数（yy）"> </el-table-column>
+        <el-table-column fixed="right" label="今重关注数（yy）"></el-table-column>
+        <el-table-column fixed="right" label="状态"></el-table-column>
+        <el-table-column fixed="right" label="备注"></el-table-column>
+        <el-table-column fixed="right" label="操作">
+          <template slot-scope="scope">
+            <el-button @click="handleClickinfo(scope.row)" type="primary" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!-- //cc直播 -->
+    <div v-if="category==6">
+      <el-table class="tablist" @current-change="handleSelectionChange" max-height="700" :data="tableData"
+        style="width: 100%">
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+        <el-table-column prop="id" label="qid"> </el-table-column>
+        <el-table-column prop="qq" label="权重"> </el-table-column>
+        <el-table-column prop="state" label="业务cc"> </el-table-column>
+        <el-table-column prop=" state" label="量级"> </el-table-column>
+        <el-table-column prop="state" label="今日关注数（cc）"> </el-table-column>
+        <el-table-column fixed="right" label="今重关注数（cc）"></el-table-column>
+        <el-table-column fixed="right" label="状态"></el-table-column>
+        <el-table-column fixed="right" label="备注"></el-table-column>
+        <el-table-column fixed="right" label="操作">
+          <template slot-scope="scope">
+            <el-button @click="handleClickinfo(scope.row)" type="primary" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!-- //部落评论 -->
+    <div v-if="category==7">
+      <el-table class="tablist" @current-change="handleSelectionChange" max-height="700" :data="tableData"
+        style="width: 100%">
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+        <el-table-column prop="id" label="qid"> </el-table-column>
+        <el-table-column prop="qq" label="权重"> </el-table-column>
+        <el-table-column prop="state" label="评论内容"> </el-table-column>
+        <el-table-column prop=" state" label="量级"> </el-table-column>
+        <el-table-column prop="state" label="今日关注数（评论）"> </el-table-column>
+        <el-table-column fixed="right" label="今重关注数（评论）"></el-table-column>
+        <el-table-column fixed="right" label="状态"></el-table-column>
+        <el-table-column fixed="right" label="备注"></el-table-column>
+        <el-table-column fixed="right" label="操作">
+          <template slot-scope="scope">
+            <el-button @click="handleClickinfo(scope.row)" type="primary" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <el-dialog title="选择业务" :visible.sync="editDialogVisible" width="40%">
+      <div style="width: 100%;position: relative;">
+        <el-table class="tablist" @current-change="handleSelectionChange" max-height="700" :data="tableData"
+          style="width: 100%">
+          <el-table-column type="selection" width="55">
+          </el-table-column>
+          <el-table-column prop="id" label="默认编号"> </el-table-column>
+          <template v-if="category==1">
+            <el-table-column prop="contact" label="昵称/ID"> </el-table-column>
+          </template>
+          <template v-if="category==5">
+            <el-table-column prop="contact" label="YY/昵称"> </el-table-column>
+          </template>
+          <template v-if="category==6">
+            <el-table-column prop="contact" label="CC/昵称"> </el-table-column>
+          </template>
+          <template v-if="category==2||category==3||category==4||category==7">
+            <el-table-column prop="contact" label="业务QQ"> </el-table-column>
+          </template>
+          <el-table-column prop=" state" label="量级"> </el-table-column>
+          <el-table-column prop=" state" label="权重"> </el-table-column>
+          <el-table-column fixed="right" label="备注"></el-table-column>
+        </el-table>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitpost">完成</el-button>
+      </span>
+    </el-dialog>
+    <div class="block">
+      <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage" layout="prev, pager, next"
+        :page-size="pageSize" :hide-on-single-page="true" :total="total"></el-pagination>
+    </div>
+
+  </div>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        listtype: 1,
+        titles: "兴趣部落",
+        editDialogVisible: false,
+        form: {
+          value: 1
+        },
+        tableData: [],
+        pageNum: 0,
+        pageSize: 10,
+        total: 10,
+        payrow: "",
+        currentPage: 1,
+        options: [
+          {
+            value: 1,
+            label: "兴趣部落"
+          },
+          {
+            value: 2,
+            label: "空间认证"
+          },
+          {
+            value: 3,
+            label: "空间达人"
+          },
+          {
+            value: 4,
+            label: "校园达人"
+          },
+          {
+            value: 5,
+            label: "yy直播"
+          },
+          {
+            value: 6,
+            label: "cc直播"
+          },
+          {
+            value: 7,
+            label: "部落评论"
+          }
+        ],
+        multipleSelection: "",
+        category: 1
+      };
+    },
+    mounted() {
+      this.getstudentlist();
+    },
+    methods: {
+      submitpost() { },
+      setCurrent() {
+        this.editDialogVisible = true;
+      },
+      setcope() { },
+      setdelete() { },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
+      handleClickinfo(row) { },
+      onSubmit() {
+        this.category = this.form.value;
+        console.log(this.category);
+        if (this.category == 7) {
+          this.tabtable = 2;
+        } else {
+          this.tabtable = 1;
+        }
+        this.form.ab_type = this.category;
+        this.titles = this.switchcategory(this.category);
+        this.getstudentlist();
+      },
+      switchcategory(category) {
+        for (var a = 0; a < this.options.length; a++) {
+          if (category == this.options[a].value) {
+            return this.options[a].label;
+          }
+        }
+      },
+      resetSearch() {
+        this.endTime = 99999999999;
+        this.startTime = 0;
+        this.form.month = "";
+      },
+      add0(m) {
+        return m < 10 ? "0" + m : m;
+      },
+      format(shijianchuo) {
+        var shijianchuo = shijianchuo * 1000;
+        //shijianchuo是整数，否则要parseInt转换
+        var time = new Date(shijianchuo);
+        var y = time.getFullYear();
+        var m = time.getMonth() + 1;
+        var d = time.getDate();
+        var h = time.getHours();
+        var mm = time.getMinutes();
+        var s = time.getSeconds();
+        return (
+          y +
+          "-" +
+          this.add0(m) +
+          "-" +
+          this.add0(d) +
+          " " +
+          this.add0(h) +
+          ":" +
+          this.add0(mm) +
+          ":" +
+          this.add0(s)
+        );
+      },
+      handleCurrentChange(val) {
+        this.currentPage = val;
+        this.getstudentlist();
+      },
+
+      getstudentlist() {
+        var params = {
+          pageNum: this.currentPage,
+          pageSize: this.pageSize
+        };
+        this.axios
+          .post("/account/student_list", params)
+          .then(res => {
+            this.tableData = res.data.data.list;
+            this.total = res.data.data.total;
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      }
+    }
+  };
+</script>
+<style lang="">
+  .titile {
+    font-size: 14px;
+    color: #928282;
+  }
+
+  .nums {
+    color: #e89c4b;
+    font-size: 18px;
+    line-height: 25px;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .listflow li {
+    float: left;
+    margin: 0 9px;
+    text-align: center;
+  }
+
+  .flowinfos {
+    font-size: 1px;
+    color: #a29797;
+  }
+</style>
