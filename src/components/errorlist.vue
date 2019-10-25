@@ -12,7 +12,7 @@
                   今日反馈数
                 </p>
                 <p class="nums">
-                  500/515
+                  {{today_yes}}
                 </p>
               </li>
             </ul>
@@ -26,7 +26,7 @@
                   总反馈数
                 </p>
                 <p class="nums">
-                  515
+                  {{total_error}}
                 </p>
               </li>
             </ul>
@@ -82,7 +82,9 @@
         payrow: "",
         currentPage: 1,
         options: {},
-        multipleSelection: ""
+        multipleSelection: "",
+        today_yes: "",
+        total_error: ""
       };
     },
     mounted() {
@@ -165,6 +167,8 @@
             }
             this.tableData = res.data.list.data;
             this.total = res.data.list.total;
+            this.today_yes = res.data.today_yes;
+            this.total_error = res.data.total_error
           })
           .catch(err => {
             console.error(err);

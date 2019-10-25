@@ -350,7 +350,7 @@
       },
       handleadd(row) {
         console.log(row);
-        var id = row.id;
+        var id = row.channel_name;
         this.$router.push({ path: "channestable", query: { id: id } });
       },
       handleedit(row) {
