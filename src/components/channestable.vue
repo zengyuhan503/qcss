@@ -93,21 +93,23 @@
           <el-row :gutter="10">
             <el-col :span="5">
               <el-form-item label="业务类型">
-                <el-select v-model="form.value" @change="onSubmit" placeholder="请选择">
+                <el-select v-model="form.category" @change="onSubmit" placeholder="请选择">
                   <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
-
+            <el-col :span="12">
+              <el-button @click="setCurrent">关联业务</el-button>
+              <el-button @click="channelselect=true">一键镜像</el-button>
+              <el-button @click="setdelete">一键删除</el-button>
+            </el-col>
           </el-row>
         </el-form>
       </el-col>
     </div>
     <div style="margin: 20px">
-      <el-button @click="setCurrent">添加业务</el-button>
-      <el-button @click="setcope">一键镜像</el-button>
-      <el-button @click="setdelete">一键删除</el-button>
+
     </div>
 
     <!-- //兴趣部落 -->
@@ -269,10 +271,10 @@
       </el-table>
     </div>
 
-    <el-dialog title="选择业务" :visible.sync="editDialogVisible" width="40%">
+    <el-dialog title="选择业务" :visible.sync="editDialogVisible" width="60%">
       <div style="width: 100%;position: relative;">
-        <el-table class="tablist" @current-change="handleSelectionChange" max-height="700" :data="tableData"
-          style="width: 100%">
+        <el-table class="tablist" @current-change="handleSelectionChange" max-height="500" height="500px"
+          :data="businesstable" style="width: 100%">
           <el-table-column type="selection" width="55">
           </el-table-column>
           <el-table-column prop="id" label="默认编号"> </el-table-column>
@@ -288,13 +290,29 @@
           <template v-if="category==2||category==3||category==4||category==7">
             <el-table-column prop="contact" label="业务QQ"> </el-table-column>
           </template>
-          <el-table-column prop=" state" label="量级"> </el-table-column>
-          <el-table-column prop=" state" label="权重"> </el-table-column>
-          <el-table-column fixed="right" label="备注"></el-table-column>
+
+          <el-table-column prop="weights" label="量级"> </el-table-column>
+          <el-table-column prop="magnitude" label="权重"> </el-table-column>
+          <el-table-column fixed="remark" label="备注"></el-table-column>
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitpost">完成</el-button>
+        <el-button type="primary" @click="submitpost">确认关联</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="选择渠道" :visible.sync="channelselect" width="40%">
+      <div style="width: 100%;position: relative;">
+        <el-table class="tablist" @current-change="handleSelectionChange" max-height="400" height="400px"
+          :data="channelselectlist" style="width: 100%">
+          <el-table-column type="selection" width="55">
+          </el-table-column>
+          <el-table-column prop="number" label="默认编号"> </el-table-column>
+          <el-table-column prop="channel_name" label="渠道名称"> </el-table-column>
+          <el-table-column prop="remark" label="备注"></el-table-column>
+        </el-table>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitpost">确定镜像</el-button>
       </span>
     </el-dialog>
     <div class="block">
@@ -309,11 +327,12 @@
   export default {
     data() {
       return {
+        businesslist: "",
         listtype: 1,
         titles: "兴趣部落",
         editDialogVisible: false,
         form: {
-          value: 1
+          category: 1
         },
         tableData: [],
         pageNum: 0,
@@ -352,13 +371,54 @@
           }
         ],
         multipleSelection: "",
-        category: 1
+        category: 1,
+        businesstable: [],
+        channelselect: false,
+        channelselectlist: []
       };
     },
     mounted() {
       this.getstudentlist();
+      this.getbusinesslist();
+      this.getchannelStati()
     },
     methods: {
+
+      getbusinesslist() {
+        var params = {
+          page: 1,
+          limit: "10000",
+          category: this.form.category
+        };
+        this.axios.get("/public/index.php/businList", {
+          params: params
+        })
+          .then(res => {
+            this.category = this.form.category;
+            this.businesstable = res.data.list;
+
+            console.log(this.businesstable)
+          })
+          .catch(err => {
+            console.error(err);
+          })
+      },
+      getchannelStati() {
+        var params = {
+          page: 1,
+          limit: "10000",
+        };
+        this.axios.get("/public/index.php/channelStati", {
+          params: params
+        })
+          .then(res => {
+            this.channelselectlist = res.data.list;
+            console.log(this.channelselectlist)
+          })
+          .catch(err => {
+            console.error(err);
+          })
+      },
       submitpost() { },
       setCurrent() {
         this.editDialogVisible = true;
@@ -370,16 +430,7 @@
       },
       handleClickinfo(row) { },
       onSubmit() {
-        this.category = this.form.value;
-        console.log(this.category);
-        if (this.category == 7) {
-          this.tabtable = 2;
-        } else {
-          this.tabtable = 1;
-        }
-        this.form.ab_type = this.category;
-        this.titles = this.switchcategory(this.category);
-        this.getstudentlist();
+        this.getbusinesslist()
       },
       switchcategory(category) {
         for (var a = 0; a < this.options.length; a++) {

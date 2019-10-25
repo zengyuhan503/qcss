@@ -98,7 +98,7 @@
           <el-table-column prop="type" label="备注"> </el-table-column>
           <el-table-column fixed="right" label="操作" width="300">
             <template slot-scope="scope">
-              <el-button @click="editDialogVisible3=true" type="primary" size="small">查看渠道</el-button>
+              <el-button @click="editDialogVisible4=true" type="primary" size="small">查看渠道</el-button>
               <el-button @click="handleedit(scope.row)" type="primary" size="small">编辑</el-button>
               <el-button @click="handdelete(scope.row)" type="primary" size="small">删除</el-button>
             </template>
@@ -129,7 +129,7 @@
           <el-table-column prop="remark" label="备注"> </el-table-column>
           <el-table-column fixed="right" label="操作" width="300">
             <template slot-scope="scope">
-              <el-button @click="editDialogVisible3=true" type="primary" size="small">查看渠道</el-button>
+              <el-button @click="editDialogVisible4=true" type="primary" size="small">查看渠道</el-button>
               <el-button @click="handleedit(scope.row)" type="primary" size="small">编辑</el-button>
               <el-button @click="handdelete(scope.row)" type="primary" size="small">删除</el-button>
             </template>
@@ -159,7 +159,7 @@
           <el-table-column prop="remark" label="备注"> </el-table-column>
           <el-table-column fixed="right" label="操作" width="300">
             <template slot-scope="scope">
-              <el-button @click="editDialogVisible3=true" type="primary" size="small">查看渠道</el-button>
+              <el-button @click="editDialogVisible4=true" type="primary" size="small">查看渠道</el-button>
               <el-button @click="handleedit(scope.row)" type="primary" size="small">编辑</el-button>
               <el-button @click="handdelete(scope.row)" type="primary" size="small">删除</el-button>
             </template>
@@ -190,7 +190,7 @@
           <el-table-column prop="remark" label="备注"> </el-table-column>
           <el-table-column fixed="right" label="操作" width="300">
             <template slot-scope="scope">
-              <el-button @click="editDialogVisible3=true" type="primary" size="small">查看渠道</el-button>
+              <el-button @click="editDialogVisible4=true" type="primary" size="small">查看渠道</el-button>
               <el-button @click="handleedit(scope.row)" type="primary" size="small">编辑</el-button>
               <el-button @click="handdelete(scope.row)" type="primary" size="small">删除</el-button>
             </template>
@@ -229,7 +229,7 @@
       <div style="width: 100%;position: relative;">
         <el-form ref="form" :model="form" label-width="130px">
           <el-form-item label="类型">
-            <el-select v-model="form.ab_type" disabled placeholder="请选择类型" @change="changeabtype">
+            <el-select v-model="form.ab_type" placeholder="请选择类型" @change="changeabtype">
               <el-option v-for="item in optionsab_type" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
@@ -373,6 +373,18 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+    <el-dialog title="渠道信息" :visible.sync="editDialogVisible4" width="30%">
+      <el-table ref="multipleTable" class="tablist" max-height="700" @current-change="handleSelectionChange"
+        :data="tableData" style="width: 100%">
+        <el-table-column prop="totalbusin" label="已关注总数/重">
+        </el-table-column>
+        <el-table-column prop="todaybusin" label="今日已关注数/重"> </el-table-column>
+        <el-table-column prop="yesbusin" label="昨日已关注数/重">
+        </el-table-column>
+        <el-table-column prop="yesbusin" label="来自渠道">
+        </el-table-column>
+      </el-table>
+    </el-dialog>
     <div class="block">
       <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage" layout="prev, pager, next"
         :page-size="pageSize" :hide-on-single-page="true" :total="total"></el-pagination>
@@ -480,7 +492,8 @@
         },
         namesa: "",
         tabtable: 1,
-        categoryseket: "1"
+        categoryseket: "1",
+        editDialogVisible4: false,
       };
     },
     mounted() {
@@ -602,7 +615,7 @@
         this.editDialogVisible2 = true;
       },
       optionsa(kew) {
-      
+
         for (var a = 0; a < this.optionsab_type.length; a++) {
           console.log(this.optionsab_type[a].label)
           if (kew == this.optionsab_type[a].label) {
