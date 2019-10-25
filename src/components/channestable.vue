@@ -91,17 +91,25 @@
       <el-col>
         <el-form ref="form" :model="form" class="filtrate" label-width="80px">
           <el-row :gutter="10">
-            <el-col :span="5">
+            <!-- <el-col :span="5">
               <el-form-item label="业务类型">
                 <el-select v-model="form.category" @change="onSubmit" placeholder="请选择">
                   <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
                 </el-select>
               </el-form-item>
+            </el-col> -->
+            <el-col :span="5">
+              <el-form-item label="业务类型">
+                <el-select v-model="form.category" placeholder="请选择" @change="onSubmit">
+                  <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-button @click="setCurrent">关联业务</el-button>
-              <el-button @click="channelselect=true">一键镜像</el-button>
+              <el-button @click="setCurrent" :loading="setCurrentStati">关联业务</el-button>
+              <el-button @click="getchannelStati" :loading="channelStati">一键镜像</el-button>
               <el-button @click="setdelete">一键删除</el-button>
             </el-col>
           </el-row>
@@ -259,8 +267,8 @@
         <el-table-column prop="qq" label="权重"> </el-table-column>
         <el-table-column prop="state" label="评论内容"> </el-table-column>
         <el-table-column prop=" state" label="量级"> </el-table-column>
-        <el-table-column prop="state" label="今日关注数（评论）"> </el-table-column>
-        <el-table-column fixed="right" label="今重关注数（评论）"></el-table-column>
+        <el-table-column prop="state" label="今日评论数（评论）"> </el-table-column>
+        <el-table-column fixed="right" label="今重评论数（评论）"></el-table-column>
         <el-table-column fixed="right" label="状态"></el-table-column>
         <el-table-column fixed="right" label="备注"></el-table-column>
         <el-table-column fixed="right" label="操作">
@@ -287,10 +295,12 @@
           <template v-if="category==6">
             <el-table-column prop="contact" label="CC/昵称"> </el-table-column>
           </template>
-          <template v-if="category==2||category==3||category==4||category==7">
+          <template v-if="category==2||category==3||category==4">
             <el-table-column prop="contact" label="业务QQ"> </el-table-column>
           </template>
-
+          <template v-if="category==7">
+            <el-table-column prop="contact" label="评论内容"> </el-table-column>
+          </template>
           <el-table-column prop="weights" label="量级"> </el-table-column>
           <el-table-column prop="magnitude" label="权重"> </el-table-column>
           <el-table-column fixed="remark" label="备注"></el-table-column>
@@ -374,17 +384,18 @@
         category: 1,
         businesstable: [],
         channelselect: false,
-        channelselectlist: []
+        channelselectlist: [],
+        channelStati: false,
+        setCurrentStati: false,
       };
     },
     mounted() {
       this.getstudentlist();
-      this.getbusinesslist();
-      this.getchannelStati()
+
     },
     methods: {
-
       getbusinesslist() {
+        this.setCurrentStati = true
         var params = {
           page: 1,
           limit: "10000",
@@ -394,16 +405,17 @@
           params: params
         })
           .then(res => {
+            this.setCurrentStati = false;
             this.category = this.form.category;
             this.businesstable = res.data.list;
-
-            console.log(this.businesstable)
+            this.editDialogVisible = true;
           })
           .catch(err => {
             console.error(err);
           })
       },
       getchannelStati() {
+        this.channelStati = true;
         var params = {
           page: 1,
           limit: "10000",
@@ -412,8 +424,9 @@
           params: params
         })
           .then(res => {
+            this.channelStati = false;
             this.channelselectlist = res.data.list;
-            console.log(this.channelselectlist)
+            this.channelselect = true;
           })
           .catch(err => {
             console.error(err);
@@ -421,7 +434,8 @@
       },
       submitpost() { },
       setCurrent() {
-        this.editDialogVisible = true;
+        this.getbusinesslist()
+
       },
       setcope() { },
       setdelete() { },
@@ -430,7 +444,17 @@
       },
       handleClickinfo(row) { },
       onSubmit() {
-        this.getbusinesslist()
+        this.category = this.form.category;
+        this.categoryseket = this.category;
+        if (this.category == 7) {
+          this.tabtable = 2;
+        } else {
+          this.tabtable = 1;
+        }
+
+        this.form.ab_type = this.category;
+        this.titles = this.switchcategory(this.category);
+        this.getstudentlist();
       },
       switchcategory(category) {
         for (var a = 0; a < this.options.length; a++) {
@@ -478,14 +502,21 @@
 
       getstudentlist() {
         var params = {
-          pageNum: this.currentPage,
-          pageSize: this.pageSize
+          page: this.currentPage,
+          limit: this.pageSize,
+          category: this.category
         };
         this.axios
-          .post("/account/student_list", params)
+          .get("/public/index.php/businList", { params: params })
           .then(res => {
-            this.tableData = res.data.data.list;
-            this.total = res.data.data.total;
+            var code = res.data.code;
+            if (code !== 200) {
+              return false;
+            }
+            this.tableData = res.data.list;
+
+            this.total = res.data.list.total;
+            this.totile = res.data;
           })
           .catch(err => {
             console.error(err);

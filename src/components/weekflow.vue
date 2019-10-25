@@ -134,9 +134,9 @@
     <div class="setGetAppPoolList">
       <el-col>
         <el-form ref="form" :model="form" class="filtrate" label-width="80px">
-         <el-row :gutter="10">
+          <el-row :gutter="10">
             <el-col :span="5">
-              <el-form-item label="流量类型" >
+              <el-form-item label="流量类型">
                 <el-select v-model="form.category" placeholder="请选择" @change="onSubmit">
                   <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                   </el-option>
@@ -160,10 +160,10 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="流量概况" :visible.sync="dialogTableVisible "   width="40%"  center>
-      <el-table :data="gridData"  style="min-height:200px" max-height="400px">
-        <el-table-column property="date" label="渠道名" ></el-table-column>
-        <el-table-column property="name" label="类型" ></el-table-column>
+    <el-dialog title="流量概况" :visible.sync="dialogTableVisible " width="40%" center>
+      <el-table :data="gridData" style="min-height:200px" max-height="400px">
+        <el-table-column property="date" label="渠道名"></el-table-column>
+        <el-table-column property="name" label="类型"></el-table-column>
         <el-table-column property="address" label="流量数新/重"></el-table-column>
       </el-table>
     </el-dialog>
@@ -274,7 +274,17 @@
     },
     methods: {
       handleClickinfo(row) {
-        this.dialogTableVisible = true
+        var params = {
+          times: row.time,
+          category: this.category
+        };
+        this.axios.get("/public/index.php/flowDetail", { params: params })
+          .then(res => {
+            this.gridData = res.data.list;
+            this.dialogTableVisible = true;
+          }).catch(err => {
+            console.error(err);
+          });
       },
       onSubmit() {
         this.category = this.form.category;

@@ -148,13 +148,14 @@
     },
     methods: {
       handleClickinfo(row) {
-        this.dialogTableVisible = true;
+     
         var params = {
             times: row.time,
             category: this.form.value
         };
         this.axios.get('/public/index.php/downloadDetails', {params: params}).then(res => {
             this.gridData = res.data.list;
+            this.dialogTableVisible = true;
         }).catch(err => {
             console.error(err);
         });

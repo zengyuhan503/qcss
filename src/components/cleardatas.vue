@@ -7,15 +7,16 @@
             <el-col :span="5">
               <el-form-item label="渠道列表">
                 <el-select v-model="form.value" placeholder="请选择">
-                  <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                  <el-option v-for="(item,index) in channelselectlist" :key="item.number" :label="item.channel_name"
+                    :value="item.channel_name">
                   </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="查询日期">
-                <el-date-picker v-model="form.value2" type="daterange" range-separator="至" start-placeholder="开始日期"
-                  end-placeholder="结束日期">
+                <el-date-picker v-model="form.value2" value-format="yyyy-MM-dd" type="daterange" range-separator="至"
+                  start-placeholder="开始日期" format="yyyy 年 MM 月 dd 日" end-placeholder="结束日期">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -62,6 +63,7 @@
   export default {
     data() {
       return {
+
         isEditUploading: false,
         editDialogVisible: false,
         pickerOptions: {
@@ -101,13 +103,30 @@
         payrow: "",
         currentPage: 1,
         options: {},
-        multipleSelection: ""
+        multipleSelection: "",
+        channelselectlist: ""
       };
     },
     mounted() {
-      this.getstudentlist();
+      this.getchannelStati()
     },
     methods: {
+      getchannelStati() {
+        var params = {
+          page: 1,
+          limit: "10000",
+        };
+        this.axios.get("/public/index.php/channelStati", {
+          params: params
+        })
+          .then(res => {
+            this.channelselectlist = res.data.list;
+            console.log(this.channelselectlist)
+          })
+          .catch(err => {
+            console.error(err);
+          })
+      },
       submitpost() { },
       handdelete(row) {
         var id = row.id;
@@ -143,7 +162,10 @@
         var id = row.id;
         this.$router.push({ path: "channetableinfo", query: { id: id } });
       },
-      onSubmit() { },
+      onSubmit() {
+        console.log(this.form)
+        this.getstudentlist()
+      },
       resetSearch() {
         this.endTime = 99999999999;
         this.startTime = 0;
@@ -186,15 +208,17 @@
 
       getstudentlist() {
         var params = {
-          pageNum: this.currentPage,
-          pageSize: this.pageSize
+          page: this.currentPage,
+          limit: this.pageSize,
+          channel: this.form.value,
+          times: this.form.value2[0] + '~' + this.form.value2[1]
         };
         this.axios
-          .get("/public/index.php/clearChannel", params)
+          .get("/public/index.php/clearChannel", {params:params})
           .then(res => {
-              console.log(res);
+            console.log(res);
             this.tableData = res.data.list;
-            this.total = res.data.data.total;
+            this.total = res.data.total;
           })
           .catch(err => {
             console.error(err);

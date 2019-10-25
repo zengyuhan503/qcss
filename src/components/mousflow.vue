@@ -274,7 +274,17 @@
     },
     methods: {
       handleClickinfo(row) {
-        this.dialogTableVisible = true
+        var params = {
+          times: row.time,
+          category: this.category
+        };
+        this.axios.get("/public/index.php/flowDetail", { params: params })
+          .then(res => {
+            this.gridData = res.data.list;
+            this.dialogTableVisible = true;
+          }).catch(err => {
+            console.error(err);
+          });
       },
       onSubmit() {
         this.category = this.form.category;

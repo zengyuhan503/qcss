@@ -106,7 +106,7 @@
       </el-table-column>
       <el-table-column prop="price" label="单价"> </el-table-column>
       <el-table-column prop="remark" label="备注"> </el-table-column>
-      <el-table-column prop="" label="终端数"> </el-table-column>
+      <!-- <el-table-column prop="total_price" label="终端数"> </el-table-column> -->
       <el-table-column fixed="right" label="操作" width="350">
         <template slot-scope="scope">
           <el-button @click="handleedit(scope.row)" type="primary" size="small">编辑</el-button>
@@ -317,7 +317,7 @@
       },
       handgetinfo(row) {
 
-        var id = row.number;
+        var id = row.channel_name;
         var params = {
           id: id
         };
@@ -325,7 +325,7 @@
           path: '/channetableinfo',
           // name: 'mallList',
           query: {
-            id: 'id'
+            id: id
           }
         })
       },

@@ -55,7 +55,7 @@
       <el-table-column prop="e_busin_number" label="Q版本"> </el-table-column>
       <el-table-column prop="e_busin_number" label="版本号" width="100"> </el-table-column>
       <el-table-column prop="e_channel" label="来自渠道"> </el-table-column>
-      <el-table-column prop="e_details" label="错误信息" width="650"> </el-table-column>
+      <el-table-column prop="e_details" label="错误信息" width="550"> </el-table-column>
     </el-table>
 
     <div class="block">

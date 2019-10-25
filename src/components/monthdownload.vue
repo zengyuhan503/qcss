@@ -94,9 +94,9 @@
       <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage" layout="prev, pager, next"
         :page-size="pageSize" :hide-on-single-page="true" :total="total"></el-pagination>
     </div>
-    <el-dialog title="下载概况" :visible.sync="dialogTableVisible" width="40%"  center>
-      <el-table :data="gridData"  style="min-height:200px" max-height="400px">
-        <el-table-column property="date" label="渠道名" ></el-table-column>
+    <el-dialog title="下载概况" :visible.sync="dialogTableVisible" width="40%" center>
+      <el-table :data="gridData" style="min-height:200px" max-height="400px">
+        <el-table-column property="date" label="渠道名"></el-table-column>
         <el-table-column property="name" label="类型"></el-table-column>
         <el-table-column property="address" label="下载数"></el-table-column>
         <el-table-column property="address" label="成功运行数"></el-table-column>
@@ -149,7 +149,16 @@
     },
     methods: {
       handleClickinfo(row) {
-        this.dialogTableVisible = true;
+        var params = {
+          times: row.time,
+          category: this.form.value
+        };
+        this.axios.get('/public/index.php/downloadDetails', { params: params }).then(res => {
+          this.gridData = res.data.list;
+          this.dialogTableVisible = true;
+        }).catch(err => {
+          console.error(err);
+        });
       },
       onSubmit() {
         this.getstudentlist();

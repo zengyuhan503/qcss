@@ -225,6 +225,7 @@
         </el-table-column>
       </el-table>
     </div>
+    
     <el-dialog title="添加业务" :visible.sync="editDialogVisible" width="30rem">
       <div style="width: 100%;position: relative;">
         <el-form ref="form" :model="form" label-width="130px">
@@ -270,7 +271,6 @@
             </el-form-item>
             <!-- 你是我见过最蠢的产品设计 -->
           </div>
-
           <el-form-item label="量级">
             <el-input v-model="form.ab_magnitude"></el-input>
           </el-form-item>

@@ -1,18 +1,18 @@
 <template lang="">
   <div>
-  
+
     <div class="setGetAppPoolList" style="margin-top:3%">
 
     </div>
     <el-table :data="tableData">
       <el-table-column property="times" label="时间" width="200"></el-table-column>
-      <el-table-column property="ip" label="QQ"></el-table-column>
-      <el-table-column property="online_qq" label="Mac"></el-table-column>
-      <el-table-column property="edition" label="Ip"></el-table-column>
-      <el-table-column property="channel" label="地区"></el-table-column>
-      <el-table-column property="success" label="Q版本"></el-table-column>
-      <el-table-column property="success" label="版本信息"></el-table-column>
-      <el-table-column property="success" label="状态"></el-table-column>
+      <el-table-column property="qq" label="QQ"></el-table-column>
+      <el-table-column property="mac" label="Mac"></el-table-column>
+      <el-table-column property="ip" label="Ip"></el-table-column>
+      <el-table-column property="areas" label="地区"></el-table-column>
+      <el-table-column property="q_edition" label="Q版本"></el-table-column>
+      <el-table-column property="edition" label="版本信息"></el-table-column>
+      <el-table-column property="status" label="状态"></el-table-column>
     </el-table>
     <div class="block">
       <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage" layout="prev, pager, next"
@@ -33,10 +33,12 @@
         total: 10,
         payrow: "",
         currentPage: 1,
-        dialogTableVisible: false
+        dialogTableVisible: false,
+        channelId: ""
       };
     },
     mounted() {
+      this.channelId = this.$route.query.id;
       this.getstudentlist();
     },
     methods: {
@@ -95,13 +97,14 @@
 
       getstudentlist() {
         var params = {
-          pageNum: this.currentPage,
-          pageSize: this.pageSize
+          page: this.currentPage,
+          limit: this.pageSize,
+          channel: this.channelId
         };
         this.axios
-          .post("/account/student_list", params)
+          .get("/public/index.php/getChannel", { params: params })
           .then(res => {
-            this.tableData = res.data.data.list;
+            this.tableData = res.data.list;
             this.total = res.data.data.total;
           })
           .catch(err => {

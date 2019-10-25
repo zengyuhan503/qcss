@@ -122,7 +122,7 @@
       <el-table-column prop="number" label="默认编号"> </el-table-column>
       <el-table-column prop="times" label="年"> </el-table-column>
       <el-table-column prop="today_process" label="进程数新/重"> </el-table-column>
-      <el-table-column prop="channel_name" label="终端数">
+      <el-table-column prop="term" label="终端数">
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="350">
         <template slot-scope="scope">
@@ -134,11 +134,11 @@
       <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage" layout="prev, pager, next"
         :page-size="pageSize" :hide-on-single-page="true" :total="total"></el-pagination>
     </div>
-    <el-dialog title="出量概率详情" :visible.sync="dialogTableVisible" width="40%" center>
+    <el-dialog title="渠道概括详情" :visible.sync="dialogTableVisible" width="40%" center>
       <el-table :data="gridData" style="min-height:200px" max-height="400px">
-        <el-table-column property="times" label="渠道名"></el-table-column>
-        <el-table-column property="todayprocess" label="进程数新/重"></el-table-column>
-        <el-table-column property="price" label="终端数"></el-table-column>
+        <el-table-column property="channel" label="渠道名"></el-table-column>
+        <el-table-column property="yes_process" label="进程数新/重"></el-table-column>
+        <el-table-column property="term" label="终端数"></el-table-column>
 
       </el-table>
     </el-dialog>
@@ -215,16 +215,14 @@
     methods: {
       handleClickinfo(row) {
         console.log(row);
-        var id = row.number;
         var params = {
-          id: id
+          times: row.times
         };
         this.axios
-          .get("/public/index.php/outputSur", { params: params })
+          .get("/public/index.php/channelD", { params: params })
           .then(res => {
             console.log(res);
-            this.gridData.push(res.data.list);
-            console.log(this.gridData);
+            this.gridData = res.data.list;
             this.dialogTableVisible = true;
           })
           .catch(err => {
@@ -277,7 +275,7 @@
           limit: this.pageSize
         };
         this.axios
-          .get("/public/index.php/channelDay", { params: params })
+          .get("/public/index.php/channelYear", )
           .then(res => {
             var data = res.data;
             this.channellist = {

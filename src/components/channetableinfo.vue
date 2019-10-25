@@ -10,7 +10,7 @@
                   今日进程
                 </p>
                 <p class="nums">
-                  500
+                  {{todayprocess}}
                 </p>
               </li>
             </ul>
@@ -25,7 +25,7 @@
                   总进程
                 </p>
                 <p class="nums">
-                  500
+                  {{yesprocess}}
                 </p>
               </li>
             </ul>
@@ -42,7 +42,7 @@
                   总金额
                 </p>
                 <p class="nums">
-                  100
+                  {{totalchannel}}
                 </p>
               </li>
 
@@ -59,7 +59,7 @@
                   在线天数
                 </p>
                 <p class="nums">
-                  50
+                  {{channel_active}}
                 </p>
               </li>
 
@@ -73,12 +73,12 @@
     </div>
     <el-table class="tablist" :data="tableData" max-height="700" style="width: 100%">
       <!-- <el-table-column  prop="id"  label="Id" > </el-table-column> -->
-      <el-table-column prop="name" label="日期"> </el-table-column>
-      <el-table-column prop="phone" label="进程数新/扣/重"> </el-table-column>
-      <el-table-column prop="state" label="单价"> </el-table-column>
-      <el-table-column prop="classHour" label="结算金额">
+      <el-table-column prop="times" label="日期"> </el-table-column>
+      <el-table-column prop="today_process" label="进程数新/扣/重"> </el-table-column>
+      <el-table-column prop="price" label="单价"> </el-table-column>
+      <el-table-column prop="total_price" label="结算金额">
       </el-table-column>
-      <el-table-column prop="ladder" label="实际结算金额">
+      <el-table-column prop="act_price" label="实际结算金额">
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="350">
         <template slot-scope="scope">
@@ -105,15 +105,22 @@
         total: 10,
         payrow: "",
         currentPage: 1,
-        dialogTableVisible: false
+        dialogTableVisible: false,
+        channelId: "",
+        todayprocess : "", //今天进程
+        yesprocess : '', //昨天进程
+        totalchannel :'',//总渠道
+        channel_active : '' //活跃渠道
       };
     },
     mounted() {
+      this.channelId = this.$route.query.id;
+
       this.getstudentlist();
     },
     methods: {
       handleinfo(row) {
-        var id = row.number;
+        var id = row.channel;
         var params = {
           id: id
         };
@@ -121,7 +128,7 @@
           path: "/list",
           // name: 'mallList',
           query: {
-            id: "id"
+            id: id
           }
         });
       },
@@ -168,20 +175,22 @@
       getstudentlist() {
         var params = {
           page: this.currentPage,
-          limit: this.pageSize
+          limit: this.pageSize,
+          channel: this.channelId
         };
         this.axios
-          .get("/public/index.php/channelStati", { params: params })
+          .get("/public/index.php/channelDetails", { params: params })
           .then(res => {
-            console.log(res);
+            // "today_pro": 0,
+            // "total_pro": 0,
+            // "total_price": 0,
+            // "online": 0,
             this.tableData = res.data.list;
             this.total = res.data.list.total;
-            this.todayprocess = res.data.todayprocess; //今天进程
-            this.yesprocess = res.data.yesprocess; //昨天进程
-            this.totalchannel = res.data.totalchannel; //总渠道
-            this.channel_active = res.data.channel_active; //活跃渠道
-            this.todayterminal = res.data.todayterminal; //今日终端
-            this.yesterminal = res.data.yesterminal; //昨日终端
+            this.todayprocess = res.data.today_pro; //今天进程
+            this.yesprocess = res.data.total_pro; //昨天进程
+            this.totalchannel = res.data.total_price; //总渠道
+            this.channel_active = res.data.online; //活跃渠道
           })
           .catch(err => {
             console.error(err);
