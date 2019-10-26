@@ -11,7 +11,7 @@
                                     总进程数/重
                                 </p>
                                 <p class="nums">
-                                    {{channellist.todayprocess}}
+                                    {{channellist.terminal_process}}
                                 </p>
                             </li>
 
@@ -27,7 +27,7 @@
                                     总终端数/重
                                 </p>
                                 <p class="nums">
-                                    {{channellist.todayterminal}}
+                                    {{channellist.total_process}}
                                 </p>
 
                             </li>
@@ -234,12 +234,8 @@
                     .then(res => {
                         var data = res.data;
                         this.channellist = {
-                            todayprocess: data.todayprocess, //今天进程
-                            yesprocess: data.yesprocess, //昨天进程
-                            totalchannel: data.totalchannel, //总渠道
-                            channel_active: data.channel_active, //活跃渠道
-                            todayterminal: data.todayterminal, //今日终端
-                            yesterminal: data.yesterminal //昨日终端
+                            terminal_process: data.terminal_process, //今天进程
+                            total_process: data.total_process, //昨天进程
                         };
                         this.tableData = res.data.list;
                         this.total = res.data.total;

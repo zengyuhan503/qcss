@@ -10,9 +10,9 @@
                   今日进程数量
                 </p>
                 <p class="nums">
-                  500
+                  {{today_follow}}
                 </p>
-                <p class="flowinfos">昨日进程：100</p>
+                <p class="flowinfos">昨日进程：{{todaybusin}}</p>
               </li>
 
             </ul>
@@ -27,7 +27,7 @@
                   执行数({{titles}})
                 </p>
                 <p class="nums">
-                  500
+                 {{total_follow}}
                 </p>
               </li>
 
@@ -45,7 +45,7 @@
                   今日关注({{titles}})
                 </p>
                 <p class="nums">
-                  100
+                  {{totalpage}}
                 </p>
               </li>
 
@@ -62,7 +62,7 @@
                   总关注({{titles}})
                 </p>
                 <p class="nums">
-                  50
+                  {{yesbusin}}
                 </p>
               </li>
 
@@ -78,7 +78,7 @@
                   在线天数
                 </p>
                 <p class="nums">
-                  100
+                  {{yesbusin}}
                 </p>
               </li>
             </ul>
@@ -300,9 +300,9 @@
           <template v-if="category==7">
             <el-table-column prop="contact" label="评论内容"> </el-table-column>
           </template>
-          <el-table-column prop="weights" label="量级"> </el-table-column>
-          <el-table-column prop="magnitude" label="权重"> </el-table-column>
-          <el-table-column fixed="remark" label="备注"></el-table-column>
+          <el-table-column prop="magnitude" label="量级"> </el-table-column>
+          <el-table-column prop="weights" label="权重"> </el-table-column>
+          <!-- <el-table-column fixed="remark" label="备注"></el-table-column> -->
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -387,12 +387,18 @@
         channelselectlist: [],
         channelStati: false,
         setCurrentStati: false,
+        channel_name: "",
+        today_follow: "",
+        todaybusin: "",
+        total_follow: "",
+        totalpage: "",
+        yesbusin: "",
       };
     },
     mounted() {
       this.channelId = this.$route.query.id;
+      this.channel_name = this.$route.query.channel_name;
       this.getstudentlist();
-
     },
     methods: {
       getbusinesslist() {
@@ -402,7 +408,7 @@
           limit: "10000",
           category: this.form.category
         };
-        this.axios.get("/public/index.php/channelRelaBusin", {
+        this.axios.get("/public/index.php/businLists", {
           params: params
         })
           .then(res => {
@@ -415,7 +421,6 @@
             console.error(err);
           })
       },
-
       getchannelStati() {
         var rows = this.$refs.ChangeTable.selection;
         console.log(rows);
@@ -461,17 +466,18 @@
           type: 'warning'
         }).then(() => {
           var params = {
-            cid: this.busiselectionlist.join(","),
-            bids: list.join(',')
+            bids: this.busiselectionlist.join(","),
+            cid: list.join(',')
           }
           this.axios.get("/public/index.php/oneKeyImage", { params: params })
             .then(res => {
               var code = res.data.code;
-              console.log(code)
+
               if (code !== 200) {
                 this.$message.error(res.data.msg);
                 return false;
-              }
+              };
+              this.channelselect = false;
               this.$message({
                 type: 'success',
                 message: res.data.msg
@@ -489,7 +495,6 @@
         });
       },
       submitpost() {
-
         var rows = this.$refs.multipleTable.selection;
         console.log(rows)
         if (rows.length == 0) {
@@ -500,22 +505,27 @@
         for (var a = 0; a < rows.length; a++) {
           list.push(rows[a].id)
         };
+        console.log(list)
         this.$confirm('你确定要让选择的业务关联到当前渠道吗, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           var params = {
-            channel: this.channelId,
+            channel: this.channel_name,
             bids: list.join(',')
           }
           this.axios.get("/public/index.php/setBusin", { params: params })
             .then(res => {
               var code = res.data.code;
+
               if (code !== 200) {
+
                 this.$message.error(res.data.msg);
                 return false;
               }
+              this.editDialogVisible = false;
+              this.getstudentlist()
               this.$message({
                 type: 'success',
                 message: res.data.msg
@@ -538,23 +548,90 @@
       },
       setcope() { },
       setdelete() {
-        var rows = this.$refs.ChangeTable.selection;
-        if (rows.length == 0) {
-          this.$message.error("请选择业务");
-          return false;
-        }
-        var list = []
-        for (var a = 0; a < rows.length; a++) {
-          list.push(rows[a].id)
-        };
+        // var rows = this.$refs.ChangeTable.selection;
+        // if (rows.length == 0) {
+        //   this.$message.error("请选择业务");
+        //   return false;
+        // }
+        // var list = []
+        // for (var a = 0; a < rows.length; a++) {
+        //   list.push(rows[a].id)
+        // };
+        // console.log(list)
+        this.deletebuis()
       },
       deletebuis(list) {
-        
+        this.$confirm('你确定要删除业务, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var params = {
+            cid: this.channelId
+          }
+          this.axios.get("/public/index.php/businDels", { params: params })
+            .then(res => {
+              var code = res.data.code;
+              if (code !== 200) {
+
+                this.$message.error(res.data.msg);
+                return false;
+              }
+              this.getstudentlist()
+              this.$message({
+                type: 'success',
+                message: res.data.msg
+              });
+            })
+            .catch(err => {
+              console.error(err);
+            })
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消关联'
+          });
+        });
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;
       },
-      handleClickinfo(row) { },
+      handleClickinfo(row) {
+        console.log(row)
+        this.$confirm('你确定要删除业务, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var params = {
+            cid: this.channelId
+          }
+          this.axios.get("/public/index.php/delBusin", { params: params })
+            .then(res => {
+              var code = res.data.code;
+              if (code !== 200) {
+
+                this.$message.error(res.data.msg);
+                return false;
+              }
+              this.getstudentlist()
+              this.$message({
+                type: 'success',
+                message: res.data.msg
+              });
+            })
+            .catch(err => {
+              console.error(err);
+            })
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消关联'
+          });
+        });
+      },
       onSubmit() {
         this.category = this.form.category;
         this.categoryseket = this.category;
@@ -617,7 +694,7 @@
           page: this.currentPage,
           limit: this.pageSize,
           category: this.category,
-          channel: this.channelId
+          channel: this.channel_name
         };
         this.axios
           .get("/public/index.php/channelBusinList", { params: params })
@@ -627,9 +704,13 @@
               return false;
             }
             this.tableData = res.data.list;
-
             this.total = res.data.list.total;
             this.totile = res.data;
+            this.today_follow = res.today_follow;
+            this.todaybusin = res.todaybusin;
+            this.total_follow = res.total_follow;
+            this.totalpage = res.totalpage;
+            this.yesbusin = res.yesbusin;
           })
           .catch(err => {
             console.error(err);

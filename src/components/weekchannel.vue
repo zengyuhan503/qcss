@@ -122,7 +122,7 @@
       <!-- <el-table-column  prop="id"  label="Id" > </el-table-column> -->
       <el-table-column prop="number" label="默认编号"> </el-table-column>
       <el-table-column prop="times" label="日期段"> </el-table-column>
-      <el-table-column prop="yes_process" label="进程数新/重"> </el-table-column>
+      <el-table-column prop="today_process" label="进程数新/重"> </el-table-column>
       <el-table-column prop="term" label="终端数">
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="350">

@@ -10,9 +10,9 @@
                                     下载总数：
                                 </p>
                                 <p class="nums">
-                                    {{link_and_exe}}
+                                    {{download_total}}
                                 </p>
-                                <p class="flowinfos">exe:{{exe_today_yes}} 链接：{{link_today_yes}}</p>
+                                <p class="flowinfos">exe:{{exe_total_download}} 链接：{{link_total_download}}</p>
                             </li>
 
                         </ul>
@@ -26,7 +26,7 @@
                                     运行总数：
                                 </p>
                                 <p class="nums">
-                                    {{exelinktotal}}
+                                    {{run_number}}
                                 </p>
                             </li>
                         </ul>
@@ -40,7 +40,7 @@
                                     运行成功比例：
                                 </p>
                                 <p class="nums">
-                                    {{termtotal}}
+                                    {{proport}}
                                 </p>
                             </li>
                         </ul>
@@ -54,7 +54,7 @@
                                     总终端数：
                                 </p>
                                 <p class="nums">
-                                    {{termtotal}}
+                                    {{terminal_number}}
                                 </p>
                             </li>
                         </ul>
@@ -144,6 +144,7 @@
                 pageSize: 10,
                 total: 10,
                 payrow: "",
+                download_total:"0",
                 currentPage: 1,
                 options: [
                     {
@@ -155,16 +156,19 @@
                         label: "链接"
                     }
                 ],
-                exetotal: "", //exe总下载
-                linktotal: "", //链接总下载
-                exelinktotal: "", //总下载数
-                termexetotal: "", //exe总终端
+                exetotal: "0", //exe总下载
+                linktotal: "0", //链接总下载
+                exelinktotal: "0", //总下载数
+                termexetotal: "0", //exe总终端
                 termlinktotal: "", //链接总终端
-                termtotal: "", //总终端
-                exe_today_yes: "", //exe日下载对比
-                link_today_yes: "", //链接日下载对比
-                link_and_exe: "", //日下载数
-                dialogTableVisible: false
+                termtotal: "0", //总终端
+                exe_total_download: "0", //exe日下载对比
+                link_total_download: "0", //链接日下载对比
+                link_and_exe: "0", //日下载数
+                dialogTableVisible: false,
+                terminal_number: "0",
+                run_number: "0",
+                proport: "0"
             };
         },
         mounted() {
@@ -239,16 +243,12 @@
                 this.axios
                     .get("/public/index.php/searchDownload", { params: params })
                     .then(res => {
-                        console.log(res.data);
-                        this.link_and_exe = res.data.link_and_exe;
-                        this.exetotal = res.data.exetotal;
-                        this.linktotal = res.data.linktotal;
-                        this.termexetotal = res.data.termexetotal;
-                        this.termlinktotal = res.data.termlinktotal;
-                        this.link_and_exe = res.data.link_and_exe;
-                        this.termtotal = res.data.termtotal;
-                        this.exe_today_yes = res.data.exe_today_yes;
-                        this.link_today_yes = res.data.link_today_yes;
+                        this.exe_total_download = res.data.exe_total_download;
+                        this.link_total_download = res.data.link_total_download;
+                        this.download_total = res.data.download_total;
+                        this.proport = res.data.proport;
+                        this.run_number = res.data.run_number;
+                        this.terminal_number = res.data.terminal_number;
                         this.tableData = res.data.list;
                         this.total = res.data.total;
                         console.log(this.tableData);

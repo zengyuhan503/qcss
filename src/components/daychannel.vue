@@ -276,7 +276,7 @@
           limit: this.pageSize
         };
         this.axios
-          .get("/public/index.php/channelDay")
+          .get("/public/index.php/channelDay",{params:params})
           .then(res => {
             var data = res.data;
             this.channellist = {

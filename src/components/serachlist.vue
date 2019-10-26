@@ -103,7 +103,7 @@
             <el-table-column prop="comment" label="部落评论新/重">
             </el-table-column>
         </el-table>
-      
+
         <div class="block">
             <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage"
                 layout="prev, pager, next" :page-size="pageSize" :hide-on-single-page="true" :total="total">
@@ -300,7 +300,7 @@
         }
     };
 </script>
-<style  scoped>
+<style scoped>
     .titile {
         font-size: 14px;
         color: #928282;

@@ -115,41 +115,41 @@
         </template>
       </el-table-column>
     </el-table>
-   
+
     <el-dialog title="填写信息" :visible.sync="editDialogVisible" width="30rem">
       <div style="width: 100%;position: relative;">
-          <el-form ref="form" :model="form" label-width="130px">
-              <el-form-item label="渠道名">
-                <el-input v-model="form.channel_name" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="用户名">
-                <el-input v-model="form.username"></el-input>
-              </el-form-item>
-              <el-form-item label="登录密码">
-                <el-input v-model="form.password"></el-input>
-              </el-form-item>
-              <el-form-item label="下载链接配置">
-                <el-input v-model="form.download_config"></el-input>
-              </el-form-item>
-              <el-form-item label="链接配置">
-                <el-input v-model="form.link_config"></el-input>
-              </el-form-item>
-              <el-form-item label="单价">
-                <el-input v-model="form.price"></el-input>
-              </el-form-item>
-              <el-form-item label="百分比">
-                <el-input v-model="form.percentage"></el-input>
-              </el-form-item>
-              <el-form-item label="备注">
-                <el-input v-model="form.remark"></el-input>
-              </el-form-item>
-              <el-form-item label="状态">
-                <el-select v-model="form.status" placeholder="请选择">
-                  <el-option v-for="item in optionsab_status" :key="item.value" :label="item.label" :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-form>
+        <el-form ref="form" :model="form" label-width="130px">
+          <el-form-item label="渠道名">
+            <el-input v-model="form.channel_name" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="用户名">
+            <el-input v-model="form.username"></el-input>
+          </el-form-item>
+          <el-form-item label="登录密码">
+            <el-input v-model="form.password"></el-input>
+          </el-form-item>
+          <el-form-item label="下载链接配置">
+            <el-input v-model="form.download_config"></el-input>
+          </el-form-item>
+          <el-form-item label="链接配置">
+            <el-input v-model="form.link_config"></el-input>
+          </el-form-item>
+          <el-form-item label="单价">
+            <el-input v-model="form.price"></el-input>
+          </el-form-item>
+          <el-form-item label="百分比">
+            <el-input v-model="form.percentage"></el-input>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input v-model="form.remark"></el-input>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select v-model="form.status" placeholder="请选择">
+              <el-option v-for="item in optionsab_status" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible=false">取 消</el-button>
@@ -198,7 +198,7 @@
     </el-dialog>
     <div class="block">
       <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage" layout="prev, pager, next"
-        :page-size="pageSize"  :total="total"></el-pagination>
+        :page-size="pageSize" :total="total"></el-pagination>
     </div>
 
     <!-- <el-dialog title="出量概率详情" :visible.sync="dialogTableVisible">
@@ -242,7 +242,7 @@
         tableData: [],
         pageNum: 0,
         pageSize: 8,
-        total:7,
+        total: 7,
         payrow: "",
         currentPage: 1,
         infotable: [],
@@ -317,16 +317,17 @@
       },
       handgetinfo(row) {
 
-        var id = row.channel_name;
+        var id = row.id;
+        var channel_name = row.channel_name;
         var params = {
-          id: id
+          id: id,
+          channel_name: channel_name
         };
+        console.log(params)
         this.$router.push({
           path: '/channetableinfo',
           // name: 'mallList',
-          query: {
-            id: id
-          }
+          query: params
         })
       },
       Visibletable(row) {
@@ -350,8 +351,13 @@
       },
       handleadd(row) {
         console.log(row);
-        var id = row.channel_name;
-        this.$router.push({ path: "channestable", query: { id: id } });
+        var id = row.number;
+        var channel_name = row.channel_name;
+        var params = {
+          id: id,
+          channel_name: channel_name
+        };
+        this.$router.push({ path: "channestable", query: params });
       },
       handleedit(row) {
         console.log(row)
@@ -423,7 +429,7 @@
             console.log(res);
             this.tableData = res.data.list;
             this.total = res.data.total;
-            console.log( this.total)
+            console.log(this.total)
             this.todayprocess = res.data.todayprocess; //今天进程
             this.yesprocess = res.data.yesprocess; //昨天进程
             this.totalchannel = res.data.totalchannel; //总渠道
